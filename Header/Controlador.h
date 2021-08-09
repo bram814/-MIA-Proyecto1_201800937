@@ -5,6 +5,8 @@
 #ifndef PROYECTO_CONTROLADOR_H
 #define PROYECTO_CONTROLADOR_H
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
 #include "Nodo.h"
 #include "../Analizador/parser.h"
 #include "../Analizador/scanner.h"
@@ -13,10 +15,10 @@ using namespace std;
 
 class Controlador{
 public:
-    void execute_command(Nodo *root);
     void execute();
     void clear();
-
+    void execute_command(Nodo *root);
+    void search_hijos(Nodo *root);
 };
 
 #endif //PROYECTO_CONTROLADOR_H

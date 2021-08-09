@@ -7,6 +7,22 @@
 
 #include <iostream>
 #include <list>
+#include <stdio.h>
+#include <cstdlib>
+#include <fstream>
+/*
+    CLASE LIST :: #include <list>
+    *******************************************
+    push_back() -> Agrega.
+    pop_back() -> Elimina.
+    begin() -> Inidio de la lista.
+    end() -> Final de la lista.
+    size() -> Tamaño de la lista.
+    empty() -> Verifica si esta vacia la lista.
+    *******************************************
+    iterator -> Es un puntero de la lista.
+
+ */
 using namespace std;
 
 class Nodo{

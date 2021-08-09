@@ -52,8 +52,8 @@ extern int yydebug;
     t_entero = 258,
     t_letra1 = 259,
     t_letra2 = 260,
-    t_identificador1 = 261,
-    t_identificador2 = 262,
+    t_root1 = 261,
+    t_root2 = 262,
     t_cadena = 263,
     punto = 264,
     menorque = 265,
@@ -73,11 +73,15 @@ extern int yydebug;
     igual = 279,
     dolar = 280,
     dospuntos = 281,
-    size = 282,
-    mkdisk = 283,
-    suma = 284,
-    multi = 285,
-    division = 286
+    k = 282,
+    m = 283,
+    mkdisk = 284,
+    size = 285,
+    path = 286,
+    u = 287,
+    suma = 288,
+    multi = 289,
+    division = 290
   };
 #endif
 
@@ -90,7 +94,7 @@ union YYSTYPE
 char              TEXT[256];
 class Nodo        *node;
 
-#line 94 "parser.h"
+#line 98 "parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

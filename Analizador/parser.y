@@ -29,8 +29,8 @@ class Nodo        *node;
 %token <TEXT> t_entero
 %token <TEXT> t_letra1
 %token <TEXT> t_letra2
-%token <TEXT> t_identificador1
-%token <TEXT> t_identificador2
+%token <TEXT> t_root1
+%token <TEXT> t_root2
 %token <TEXT> t_cadena
 
 
@@ -52,9 +52,15 @@ class Nodo        *node;
 %token<TEXT> igual
 %token<TEXT> dolar
 %token<TEXT> dospuntos
+%token<TEXT> k
+%token<TEXT> m
 
-%token<TEXT> size
+// COMANDO
 %token<TEXT> mkdisk
+// PARAMETRO
+%token<TEXT> size
+%token<TEXT> path
+%token<TEXT> u
 
 // ACA SERAN TODOS LOS NO TERMINALES
 %type<node> Start 		// INICIA
@@ -77,12 +83,15 @@ Start
 COMANDO
 	:  mkdisk COMANDOMKDISKS 	{ $$ = new Nodo("MKDISK", ""); $$->add(*$2); }
 	;
-
+// ADMINISTRACION DE DISCOS.
 COMANDOMKDISKS
 	: COMANDOMKDISKS COMANDOMKDISK	{ $$ = $1; $$->add(*$2); }
 	| COMANDOMKDISK			{ $$ = new Nodo("PARAMETROS-MKDISK",""); $$->add(*$1);}
 	;
 COMANDOMKDISK
 	: menos size igual t_entero 	{ $$ = new Nodo("SIZE", $4); }
+	| menos path igual t_root1	{ $$ = new Nodo("PATH", $4); }
+	| menos u igual k		{$$ = new Nodo("U", $4); }
+	| menos u igual m		{$$ = new Nodo("U", $4); }
 	;
 

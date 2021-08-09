@@ -19,8 +19,8 @@ t_entero ("-")?[0-9]+
 t_letra1 ([a-zA-Z_])[a-zA-Z0-9_]*
 t_letra2 ([a-zA-Z_]*)[a-zA-Z0-9_]*
 
-t_identificador1 ("/"{t_letra1})+("/"{t_letra1}"."{t_letra1})
-t_identificador2 ("/"{t_letra1})+("/"{t_letra1})
+t_root1 ("/"{t_letra1})+("/"{t_letra1}"."{t_letra1})
+t_root2 ("/"{t_letra1})+("/"{t_letra1})
 
 /*t_caracter "\'"("\\")?({t_letra1}|{t_entero})"\'"*/
 t_cadena [\"][^\"\n]*[\"\n]
@@ -48,16 +48,19 @@ t_cadena [\"][^\"\n]*[\"\n]
 "=" {return igual;}
 "$" {return dolar;}
 ":" {return dospuntos;}
+"k" {return k;}
+"m" {return m;}
 
 "size" {return size;}
 "mkdisk" {return mkdisk;}
-
+"path" {return path;}
+"u" {return u;}
 
 {t_entero}         {strcpy(yylval.TEXT, yytext); return t_entero;}
 {t_letra1}         {strcpy(yylval.TEXT, yytext); return t_letra1;}
 {t_letra2}         {strcpy(yylval.TEXT, yytext); return t_letra2;}
-{t_identificador1} {strcpy(yylval.TEXT, yytext); return t_identificador1;}
-{t_identificador2} {strcpy(yylval.TEXT, yytext); return t_identificador2;}
+{t_root1} {strcpy(yylval.TEXT, yytext); return t_root1;}
+{t_root2} {strcpy(yylval.TEXT, yytext); return t_root2;}
 {t_cadena}         {strcpy(yylval.TEXT, yytext); return t_cadena;}
 (\s|\r|\t|\n)+     {}
 
