@@ -51,17 +51,18 @@ t_cadena [\"][^\"\n]*[\"\n]
 
 
 
-"mkdisk" {return mkdisk;}           /* COMANDO mkdisk */
-"exec" {return exec; }              /* COMANDO exec */
-"size" {return size;}
-"path" {return path;}
-"u" {return u;}                     /* PARAMETRO -u */
-"k" {return k;}
-"m" {return m;}
-"f" {return f;}                     /* PARAMETRO -f */
-"bf" {return bf;}
-"ff" {return ff;}
-"wf" {return wf;}
+"mkdisk"    {return mkdisk;}            /* COMANDO mkdisk   */
+"exec"      {return exec;}              /* COMANDO exec     */
+"rmdisk"    {return rmdisk;}            /* COMANDO rmdisk   */
+"size"      {return size;}
+"path"      {return path;}
+"u"         {return u;}                 /* PARAMETRO -u     */
+"k"         {return k;}
+"m"         {return m;}
+"f"         {return f;}                 /* PARAMETRO -f     */
+"bf"        {return bf;}
+"ff"        {return ff;}
+"wf"        {return wf;}
 
 
 {t_entero}         {strcpy(yylval.TEXT, yytext); return t_entero;}

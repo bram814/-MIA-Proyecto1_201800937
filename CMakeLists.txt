@@ -10,4 +10,4 @@ add_executable(PROYECTO
         Analizador/parser.y
         Analizador/scanner.cpp
         Analizador/scanner.h
-        main.cpp src/Nodo.cpp Header/Nodo.h Header/Controlador.h src/Controlador.cpp Header/Administracion/Discos/Mkdisk.h src/Administracion/Discos/Mkdisk.cpp Header/Script/Exec.h src/Script/Exec.cpp)
+        main.cpp src/Nodo.cpp Header/Nodo.h Header/Controlador.h src/Controlador.cpp Header/Administracion/Discos/Mkdisk.h src/Administracion/Discos/Mkdisk.cpp Header/Script/Exec.h src/Script/Exec.cpp Header/Administracion/Discos/Rmdisk.h src/Administracion/Discos/Rmdisk.cpp)

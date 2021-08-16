@@ -12,6 +12,7 @@
 #include "../Analizador/parser.h"
 #include "../Analizador/scanner.h"
 #include "Administracion/Discos/Mkdisk.h"
+#include "Administracion/Discos/Rmdisk.h"
 #include "Script/Exec.h"
 extern Nodo *root;
 using namespace std;

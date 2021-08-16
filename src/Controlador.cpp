@@ -36,6 +36,9 @@ void Controlador::execute_command(Nodo *root) { // Verifica el comando y lo ejec
     }else if(root->tipo == "EXEC"){
         Exec::execute_exec(root);
         return;
+    }else if(root->tipo == "RMDISK"){
+        Rmdisk::execute_rmdisk(root);
+        return;
     }
 
 }

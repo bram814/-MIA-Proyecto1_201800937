@@ -57,6 +57,7 @@ class Nodo        *node;
 
 %token<TEXT> mkdisk 		// COMANDO mkdisk
 %token<TEXT> exec		// COMANDO exec
+%token<TEXT> rmdisk		// COMANDO rmdisk
 %token<TEXT> size		// PARAMETRO -size
 %token<TEXT> path		// PARAMETRO -path
 // ----------------
@@ -91,6 +92,7 @@ Start
 COMANDO
 	:  mkdisk COMANDOMKDISKS 	{ $$ = new Nodo("MKDISK", ""); $$->add(*$2); }
 	|  exec COMANDOMKDISKS		{ $$ = new Nodo("EXEC", ""); $$->add(*$2); }
+	|  rmdisk COMANDOMKDISKS	{ $$ = new Nodo("RMDISK", ""); $$->add(*$2); }
 	;
 // ADMINISTRACION DE DISCOS.
 COMANDOMKDISKS
