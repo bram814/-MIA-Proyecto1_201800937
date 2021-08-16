@@ -29,4 +29,5 @@ void Rmdisk::execute_rmdisk(Nodo *root){
             return Controlador::print("NO SE ELIMINO EL DISCO!!");
         }
     }
+    return Controlador::print("NO EXISTE EL ARCHIVO!!");
 }
