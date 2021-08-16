@@ -11,19 +11,21 @@
 #include "Nodo.h"
 #include "../Analizador/parser.h"
 #include "../Analizador/scanner.h"
-#include "Administracion/Mkdisk.h"
+#include "Administracion/Discos/Mkdisk.h"
+#include "Script/Exec.h"
 extern Nodo *root;
 using namespace std;
 
 class Controlador{
 public:
-    static void print(const string& msg);
-    void execute();
-    void clear();
-    void execute_command(Nodo *root);
-    static void create_directorio(string dir);
+    static void execute();
+    static void command(const string& input);
+    static void execute_command(Nodo *root);
+    static void clear();
+    static bool getDir(string dir);
     static bool getFile(string dir);
-    bool getDir(string dir);
+    static void create_directorio(string dir);
+    static void print(const string& msg);
 
     struct Particion{
         char part_status;

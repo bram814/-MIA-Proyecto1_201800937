@@ -74,18 +74,19 @@ extern int yydebug;
     dolar = 280,
     dospuntos = 281,
     mkdisk = 282,
-    size = 283,
-    path = 284,
-    u = 285,
-    k = 286,
-    m = 287,
-    f = 288,
-    bf = 289,
-    ff = 290,
-    wf = 291,
-    suma = 292,
-    multi = 293,
-    division = 294
+    exec = 283,
+    size = 284,
+    path = 285,
+    u = 286,
+    k = 287,
+    m = 288,
+    f = 289,
+    bf = 290,
+    ff = 291,
+    wf = 292,
+    suma = 293,
+    multi = 294,
+    division = 295
   };
 #endif
 
@@ -98,7 +99,7 @@ union YYSTYPE
 char              TEXT[256];
 class Nodo        *node;
 
-#line 102 "parser.h"
+#line 103 "parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

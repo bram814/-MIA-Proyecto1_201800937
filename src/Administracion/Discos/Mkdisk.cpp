@@ -2,7 +2,7 @@
 // Created by abraham on 8/08/21.
 //
 
-#include "../../Header/Administracion/Mkdisk.h"
+#include "../../../Header/Administracion/Discos/Mkdisk.h"
 
 void Mkdisk::create_mkdisk(Nodo *root) {
 
@@ -11,21 +11,14 @@ void Mkdisk::create_mkdisk(Nodo *root) {
     int i = 0, sizeDK;
     string dirDK;
     char uDK='k', fDK='f';
-    //    print("CONTADOR: "+);
-    cout << "contador: " << root->hijo.begin()->contador << endl;
+
     while(i<root->hijo.begin()->contador){
         if(pos->tipo == "SIZE"){
-            cout << pos->tipo << ": " << pos->valor << endl;
             sizeDK = stoi(pos->valor);
-            if(sizeDK<=0){
-                return Controlador::print("Es menor a 0 -size.");
-            }
+            if(sizeDK<=0) return Controlador::print("Es menor a 0 -size.");
         }else if(pos->tipo == "PATH"){
-            cout << pos->tipo << ": " << pos->valor << endl;
             dirDK = pos->valor;
         }else if(pos->tipo == "U"){
-            Controlador::print(pos->tipo);
-            Controlador::print(pos->valor);
             if(pos->valor == "m"){
                 uDK = 'm';
             }else if(pos->valor == "k"){
@@ -43,6 +36,8 @@ void Mkdisk::create_mkdisk(Nodo *root) {
             }else{
                 return Controlador::print("Parametro incorrecto, solo puede ser -f = (BF, FF, WF).");
             }
+        } else{
+            return Controlador::print("ERROR DE PARAMETRO INCORRECTO.");
         }
         pos++;
         i++;
@@ -59,13 +54,13 @@ void Mkdisk::create_mkdisk(Nodo *root) {
     if(uDK == 'm') sizeDK = sizeDK*1024*1024; // convierte a MEGABYTES
     if(uDK == 'k') sizeDK = sizeDK*1024;      // convierte a KILOBYTES
 
-    Controlador::MBR mbr;
+    Controlador::MBR mbr{};
     mbr.mbr_tam = sizeDK;
     mbr.mbr_fecha_creacion = time(0);
     mbr.mbr_disk_asignature = rand()%100;
     mbr.mbr_disk_fit = fDK;
 
-    Controlador::Particion part;
+    Controlador::Particion part{};
     part.part_status = '0'; // 0 incactiva, 1 activa.
     part.part_type = '-';
     part.part_fit = '-';
@@ -86,5 +81,5 @@ void Mkdisk::create_mkdisk(Nodo *root) {
     fseek(file, 0, SEEK_SET);
     fwrite(&mbr, sizeof (Controlador::MBR), 1, file);
     fclose(file);
-
+    Controlador::print("SE CREO EL ARCHIVO!!!");
 }

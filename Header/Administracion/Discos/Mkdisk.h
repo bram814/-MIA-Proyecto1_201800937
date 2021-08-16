@@ -6,7 +6,7 @@
 #define PROYECTO_MKDISK_H
 
 
-#include "../../Header/Controlador.h"
+#include "../../Controlador.h"
 class Mkdisk{
 public:
     static void create_mkdisk(Nodo *root);

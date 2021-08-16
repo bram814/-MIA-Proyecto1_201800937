@@ -51,7 +51,8 @@ t_cadena [\"][^\"\n]*[\"\n]
 
 
 
-"mkdisk" {return mkdisk;}           /* COMANDO */
+"mkdisk" {return mkdisk;}           /* COMANDO mkdisk */
+"exec" {return exec; }              /* COMANDO exec */
 "size" {return size;}
 "path" {return path;}
 "u" {return u;}                     /* PARAMETRO -u */
