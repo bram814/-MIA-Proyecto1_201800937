@@ -156,15 +156,19 @@ extern int yydebug;
     igual = 279,
     dolar = 280,
     dospuntos = 281,
-    k = 282,
-    m = 283,
-    mkdisk = 284,
-    size = 285,
-    path = 286,
-    u = 287,
-    suma = 288,
-    multi = 289,
-    division = 290
+    mkdisk = 282,
+    size = 283,
+    path = 284,
+    u = 285,
+    k = 286,
+    m = 287,
+    f = 288,
+    bf = 289,
+    ff = 290,
+    wf = 291,
+    suma = 292,
+    multi = 293,
+    division = 294
   };
 #endif
 
@@ -177,7 +181,7 @@ union YYSTYPE
 char              TEXT[256];
 class Nodo        *node;
 
-#line 181 "parser.cpp"
+#line 185 "parser.cpp"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -496,19 +500,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   13
+#define YYLAST   19
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  36
+#define YYNTOKENS  40
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  12
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  19
+#define YYNSTATES  24
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   290
+#define YYMAXUTOK   294
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -549,14 +553,15 @@ static const yytype_int8 yytranslate[] =
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35
+      35,    36,    37,    38,    39
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    80,    80,    84,    88,    89,    92,    93,    94,    95
+       0,    87,    87,    91,    95,    96,    99,   100,   101,   102,
+     103,   104,   105
 };
 #endif
 
@@ -569,9 +574,9 @@ static const char *const yytname[] =
   "t_root1", "t_root2", "t_cadena", "punto", "menorque", "mayorque",
   "corchetea", "corchetec", "puntocoma", "potencia", "coma", "parentesisa",
   "parentesisc", "llavea", "llavec", "mas", "menos", "por", "igual",
-  "dolar", "dospuntos", "k", "m", "mkdisk", "size", "path", "u", "suma",
-  "multi", "division", "$accept", "Start", "COMANDO", "COMANDOMKDISKS",
-  "COMANDOMKDISK", YY_NULLPTR
+  "dolar", "dospuntos", "mkdisk", "size", "path", "u", "k", "m", "f", "bf",
+  "ff", "wf", "suma", "multi", "division", "$accept", "Start", "COMANDO",
+  "COMANDOMKDISKS", "COMANDOMKDISK", YY_NULLPTR
 };
 #endif
 
@@ -583,11 +588,11 @@ static const yytype_int16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294
 };
 # endif
 
-#define YYPACT_NINF (-31)
+#define YYPACT_NINF (-29)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -601,8 +606,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -24,   -16,     7,   -31,   -30,   -16,   -31,   -31,   -15,   -14,
-     -13,   -31,     5,     6,   -24,   -31,   -31,   -31,   -31
+     -18,   -12,    11,   -29,   -28,   -12,   -29,   -29,   -11,   -10,
+      -9,    -8,   -29,     9,    12,   -28,   -28,   -29,   -29,   -29,
+     -29,   -29,   -29,   -29
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -611,13 +617,14 @@ static const yytype_int8 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     2,     0,     3,     5,     1,     0,     0,
-       0,     4,     0,     0,     0,     6,     7,     8,     9
+       0,     0,     4,     0,     0,     0,     0,     6,     7,     8,
+       9,    10,    11,    12
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -31,   -31,   -31,   -31,     8
+     -29,   -29,   -29,   -29,    14
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -631,34 +638,37 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       8,     9,    10,    17,    18,     1,     4,     7,    15,    12,
-      13,    14,    16,    11
+       8,     9,    10,    19,    20,    11,    21,    22,    23,     1,
+       4,     7,    17,    13,    14,    15,    16,     0,    18,    12
 };
 
 static const yytype_int8 yycheck[] =
 {
-      30,    31,    32,    27,    28,    29,    22,     0,     3,    24,
-      24,    24,     6,     5
+      28,    29,    30,    31,    32,    33,    34,    35,    36,    27,
+      22,     0,     3,    24,    24,    24,    24,    -1,     6,     5
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    29,    37,    38,    22,    39,    40,     0,    30,    31,
-      32,    40,    24,    24,    24,     3,     6,    27,    28
+       0,    27,    41,    42,    22,    43,    44,     0,    28,    29,
+      30,    33,    44,    24,    24,    24,    24,     3,     6,    31,
+      32,    34,    35,    36
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    36,    37,    38,    39,    39,    40,    40,    40,    40
+       0,    40,    41,    42,    43,    43,    44,    44,    44,    44,
+      44,    44,    44
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     2,     2,     1,     4,     4,     4,     4
+       0,     2,     1,     2,     2,     1,     4,     4,     4,     4,
+       4,     4,     4
 };
 
 
@@ -1354,55 +1364,73 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 80 "parser.y"
+#line 87 "parser.y"
                   { root = (yyval.node); }
-#line 1360 "parser.cpp"
+#line 1370 "parser.cpp"
     break;
 
   case 3:
-#line 84 "parser.y"
+#line 91 "parser.y"
                                         { (yyval.node) = new Nodo("MKDISK", ""); (yyval.node)->add(*(yyvsp[0].node)); }
-#line 1366 "parser.cpp"
+#line 1376 "parser.cpp"
     break;
 
   case 4:
-#line 88 "parser.y"
+#line 95 "parser.y"
                                         { (yyval.node) = (yyvsp[-1].node); (yyval.node)->add(*(yyvsp[0].node)); }
-#line 1372 "parser.cpp"
+#line 1382 "parser.cpp"
     break;
 
   case 5:
-#line 89 "parser.y"
+#line 96 "parser.y"
                                         { (yyval.node) = new Nodo("PARAMETROS-MKDISK",""); (yyval.node)->add(*(yyvsp[0].node));}
-#line 1378 "parser.cpp"
+#line 1388 "parser.cpp"
     break;
 
   case 6:
-#line 92 "parser.y"
-                                        { (yyval.node) = new Nodo("SIZE", (yyvsp[0].TEXT)); }
-#line 1384 "parser.cpp"
+#line 99 "parser.y"
+                                        { (yyval.node) = new Nodo("SIZE", (yyvsp[0].TEXT)); 	}
+#line 1394 "parser.cpp"
     break;
 
   case 7:
-#line 93 "parser.y"
-                                        { (yyval.node) = new Nodo("PATH", (yyvsp[0].TEXT)); }
-#line 1390 "parser.cpp"
+#line 100 "parser.y"
+                                        { (yyval.node) = new Nodo("PATH", (yyvsp[0].TEXT)); 	}
+#line 1400 "parser.cpp"
     break;
 
   case 8:
-#line 94 "parser.y"
-                                        {(yyval.node) = new Nodo("U", (yyvsp[0].TEXT)); }
-#line 1396 "parser.cpp"
+#line 101 "parser.y"
+                                        { (yyval.node) = new Nodo("U", "k"); 	}
+#line 1406 "parser.cpp"
     break;
 
   case 9:
-#line 95 "parser.y"
-                                        {(yyval.node) = new Nodo("U", (yyvsp[0].TEXT)); }
-#line 1402 "parser.cpp"
+#line 102 "parser.y"
+                                        { (yyval.node) = new Nodo("U", "m"); 	}
+#line 1412 "parser.cpp"
+    break;
+
+  case 10:
+#line 103 "parser.y"
+                                        { (yyval.node) = new Nodo("F", "bf"); 	}
+#line 1418 "parser.cpp"
+    break;
+
+  case 11:
+#line 104 "parser.y"
+                                        { (yyval.node) = new Nodo("F", "ff"); 	}
+#line 1424 "parser.cpp"
+    break;
+
+  case 12:
+#line 105 "parser.y"
+                                        { (yyval.node) = new Nodo("F", "wf"); 	}
+#line 1430 "parser.cpp"
     break;
 
 
-#line 1406 "parser.cpp"
+#line 1434 "parser.cpp"
 
       default: break;
     }

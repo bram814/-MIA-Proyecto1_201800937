@@ -52,15 +52,22 @@ class Nodo        *node;
 %token<TEXT> igual
 %token<TEXT> dolar
 %token<TEXT> dospuntos
+
+
+
+%token<TEXT> mkdisk 		// COMANDO
+%token<TEXT> size		// PARAMETRO -size
+%token<TEXT> path		// PARAMETRO -path
+// ----------------
+%token<TEXT> u			// PARAMETRO -u
 %token<TEXT> k
 %token<TEXT> m
+// ----------------
+%token<TEXT> f			// PARAMETRO -f
+%token<TEXT> bf
+%token<TEXT> ff
+%token<TEXT> wf
 
-// COMANDO
-%token<TEXT> mkdisk
-// PARAMETRO
-%token<TEXT> size
-%token<TEXT> path
-%token<TEXT> u
 
 // ACA SERAN TODOS LOS NO TERMINALES
 %type<node> Start 		// INICIA
@@ -89,9 +96,12 @@ COMANDOMKDISKS
 	| COMANDOMKDISK			{ $$ = new Nodo("PARAMETROS-MKDISK",""); $$->add(*$1);}
 	;
 COMANDOMKDISK
-	: menos size igual t_entero 	{ $$ = new Nodo("SIZE", $4); }
-	| menos path igual t_root1	{ $$ = new Nodo("PATH", $4); }
-	| menos u igual k		{$$ = new Nodo("U", $4); }
-	| menos u igual m		{$$ = new Nodo("U", $4); }
+	: menos size igual t_entero 	{ $$ = new Nodo("SIZE", $4); 	}
+	| menos path igual t_root1	{ $$ = new Nodo("PATH", $4); 	}
+	| menos u igual k		{ $$ = new Nodo("U", "k"); 	}
+	| menos u igual m		{ $$ = new Nodo("U", "m"); 	}
+	| menos f igual bf		{ $$ = new Nodo("F", "bf"); 	}
+	| menos f igual ff		{ $$ = new Nodo("F", "ff"); 	}
+	| menos f igual wf		{ $$ = new Nodo("F", "wf"); 	}
 	;
 

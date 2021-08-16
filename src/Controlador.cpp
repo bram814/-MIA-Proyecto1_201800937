@@ -2,12 +2,13 @@
 // Created by abraham on 8/08/21.
 //
 #include "../Header/Controlador.h"
+
 //#include <stdio.h>
 void Controlador::execute() {
     string input;
     while(true){
-        cout << "Ingrese un COMANDO: " << endl;
-        cout << "~$ ";
+        cout << "Ingrese un Comando: " << endl;
+        cout << ">> ";
         getline(cin, input);
         if(input == "exit"){
             break;
@@ -25,9 +26,12 @@ void Controlador::execute() {
 }
 
 void Controlador::execute_command(Nodo *root) {
+    string tipo = root->tipo;
     if(root->tipo == "MKDISK"){
-        this->search_hijos(root);
+        Mkdisk::create_mkdisk(root);
+        return;
     }
+
 }
 
 
@@ -36,35 +40,36 @@ void Controlador::clear() {
     system(command.c_str());
 }
 
-void Controlador::search_hijos(Nodo *root) {
-    list<Nodo>:: iterator pos;
-    pos = root->hijo.begin()->hijo.begin();
-//    cout << "Tipo: " << root->hijo.begin()->tipo << endl;
-//    cout << "Valor: " << root->hijo.begin()->valor << endl;
-//    cout << "Contador: " << root->hijo.begin()->contador << endl;
-    int i = 0, sizeDK;
-    string dirDK;
-    while(i<root->hijo.begin()->contador){
-        if(pos->tipo == "SIZE"){
-            cout << pos->tipo << ": " << pos->valor << endl;
-            sizeDK = atoi(pos->valor.c_str());
-        }else if(pos->tipo == "PATH"){
-            cout << pos->tipo << ": " << pos->valor << endl;
-            dirDK = pos->valor;
-        }
-        pos++;
-        i++;
+bool Controlador::getDir(string dir){
+    DIR *directorio = opendir(dir.c_str());
+    if(directorio){
+        closedir((directorio));
+        print("EXISTE EL ARCHIVO!!");
+        return true;
     }
-
-    FILE *ptr_file;
-    ptr_file = fopen(dirDK.c_str(), "ab");
-    if(ptr_file==NULL){
-        exit(1);
-    }
-    char buffer[1024];
-
-    int x = 1000;
-    fwrite(&x, sizeof(int), 1, ptr_file);
-    cout << "SE HA CREADO EL ARCHIVO" << endl;
-    fclose(ptr_file);
+    return false;
 }
+
+bool Controlador::getFile(string dir){
+    FILE *archivo = fopen(dir.c_str(), "r");
+        if(archivo){
+            fclose(archivo);
+            print("EXISTE EL ARCHIVO!!");
+            return true;
+        }
+    return false;
+}
+
+void Controlador::create_directorio(string dir) {
+    string pathDirectorio;
+    const size_t last_slash = dir.rfind('/'); // Obtained la ruta y si no existe crea las carpetas.
+    if(string::npos != last_slash){
+        pathDirectorio = dir.substr(0, last_slash) + "/";
+    }
+    string consola = "sudo mkdir -p '" + pathDirectorio + "'"; // Crea la Carpeta que no exista.
+    system(consola.c_str());
+    consola = "sudo chmod -R 777 '" + pathDirectorio + "'"; // Accede a los permisos del usuario.
+    system(consola.c_str());
+}
+
+void Controlador::print(const string& msg){ cout << "\n" << msg << endl; }

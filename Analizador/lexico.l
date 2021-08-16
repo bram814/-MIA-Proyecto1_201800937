@@ -48,19 +48,26 @@ t_cadena [\"][^\"\n]*[\"\n]
 "=" {return igual;}
 "$" {return dolar;}
 ":" {return dospuntos;}
+
+
+
+"mkdisk" {return mkdisk;}           /* COMANDO */
+"size" {return size;}
+"path" {return path;}
+"u" {return u;}                     /* PARAMETRO -u */
 "k" {return k;}
 "m" {return m;}
+"f" {return f;}                     /* PARAMETRO -f */
+"bf" {return bf;}
+"ff" {return ff;}
+"wf" {return wf;}
 
-"size" {return size;}
-"mkdisk" {return mkdisk;}
-"path" {return path;}
-"u" {return u;}
 
 {t_entero}         {strcpy(yylval.TEXT, yytext); return t_entero;}
 {t_letra1}         {strcpy(yylval.TEXT, yytext); return t_letra1;}
 {t_letra2}         {strcpy(yylval.TEXT, yytext); return t_letra2;}
-{t_root1} {strcpy(yylval.TEXT, yytext); return t_root1;}
-{t_root2} {strcpy(yylval.TEXT, yytext); return t_root2;}
+{t_root1}          {strcpy(yylval.TEXT, yytext); return t_root1;}
+{t_root2}          {strcpy(yylval.TEXT, yytext); return t_root2;}
 {t_cadena}         {strcpy(yylval.TEXT, yytext); return t_cadena;}
 (\s|\r|\t|\n)+     {}
 
