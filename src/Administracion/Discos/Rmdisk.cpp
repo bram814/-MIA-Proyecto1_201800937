@@ -20,7 +20,7 @@ void Rmdisk::execute_rmdisk(Nodo *root){
     char root_file[path.length()+1]; // se crea un array de char.
     strcpy(root_file, path.c_str()); // se convierte la ruta a char, por qué "remove" solo acepta char.
     if(Controlador::getFile(path)){
-        Controlador::print("¿Quiere eliminar el Archivo? [s/n}");
+        Controlador::print("¿Quiere eliminar el Archivo? [s/n]");
         getline(cin, input);
         if(input == "s" || input == "S"){
             if(remove(root_file)!=0) return Controlador::print("ERROR PARA ELIMINAR EL DISCO!!");
