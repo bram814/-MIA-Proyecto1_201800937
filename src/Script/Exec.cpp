@@ -13,7 +13,10 @@ void Exec::execute_exec(Nodo *root) {
         if(temp->tipo == "PATH"){
             ifstream file(temp->valor);
             while(getline(file, input)){
-                Controlador::command(input);
+                if(input.length()>1 && input[0]!='#'){
+                    Controlador::print(">> " + input);
+                    Controlador::command(input);
+                }
             }
             break;
         }

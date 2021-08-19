@@ -15,7 +15,9 @@ void Controlador::execute() { // Obtiene el comando en cadena.
         }else if(input == "clear"){
             clear();
         }else{
-            command(input);
+            if(input.length()>1 && input[0]!='#'){
+                command(input);
+            }
         }
     }
 }
