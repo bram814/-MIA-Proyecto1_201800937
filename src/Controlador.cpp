@@ -44,6 +44,8 @@ void Controlador::execute_command(Nodo *root) { // Verifica el comando y lo ejec
         return;
     }else if(root->tipo == "FDISK"){
         Fdisk::execute_fdisk(root);
+    }else if(root->tipo == "PAUSE"){
+        Pause::pause();
     }
 
 }

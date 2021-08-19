@@ -15,6 +15,7 @@
 #include "Administracion/Discos/Rmdisk.h"
 #include "Administracion/Discos/Fdisk.h"
 #include "Script/Exec.h"
+#include "Script/Pause.h"
 extern Nodo *root;
 using namespace std;
 
