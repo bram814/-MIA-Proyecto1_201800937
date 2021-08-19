@@ -76,6 +76,9 @@ void Fdisk::execute_fdisk(Nodo *root){
             return Controlador::print("ERROR, NO PUEDEN VENIR JUNTOS (DELETE Y ADD)!!!");
         }
     }else{
+        if(flag_path && flag_name){
+            
+        }
         return Controlador::print("ERROR, FALTA PARAMETRO [SIZE,PATH,NAME]!!");
     }
 }
@@ -226,7 +229,7 @@ void Fdisk::logic(FDISK *fdisk){
         fseek(file, ebr.part_next, SEEK_SET);
         fread(&ebr, sizeof(Controlador::EBR), 1, file);
     }
-    if(mbr.mbr_particion[i_extendida].part_size < aux_size){
+    if(mbr.mbr_particion[i_extendida].part_size < (aux_size+fdisk->part_size)){
         return Controlador::print("Error, excede el tamaño de la particion logica con la extendida.");
     }
     int aux_part_next;
