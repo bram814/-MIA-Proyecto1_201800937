@@ -14,8 +14,9 @@ void Controlador::execute() { // Obtiene el comando en cadena.
             break;
         }else if(input == "clear"){
             clear();
+        }else{
+            command(input);
         }
-        command(input);
     }
 }
 
@@ -39,6 +40,8 @@ void Controlador::execute_command(Nodo *root) { // Verifica el comando y lo ejec
     }else if(root->tipo == "RMDISK"){
         Rmdisk::execute_rmdisk(root);
         return;
+    }else if(root->tipo == "FDISK"){
+        Fdisk::execute_fdisk(root);
     }
 
 }

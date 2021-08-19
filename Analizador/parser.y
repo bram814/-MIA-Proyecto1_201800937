@@ -58,17 +58,33 @@ class Nodo        *node;
 %token<TEXT> mkdisk 		// COMANDO mkdisk
 %token<TEXT> exec		// COMANDO exec
 %token<TEXT> rmdisk		// COMANDO rmdisk
+%token<TEXT> fdisk		// COMANDO fdisk
 %token<TEXT> size		// PARAMETRO -size
 %token<TEXT> path		// PARAMETRO -path
 // ----------------
 %token<TEXT> u			// PARAMETRO -u
 %token<TEXT> k
 %token<TEXT> m
+%token<TEXT> b
 // ----------------
 %token<TEXT> f			// PARAMETRO -f
 %token<TEXT> bf
 %token<TEXT> ff
 %token<TEXT> wf
+// ----------------
+%token<TEXT> type		// PARAMETRO -type
+%token<TEXT> p
+%token<TEXT> e
+%token<TEXT> l
+// ----------------
+%token<TEXT> t_delete            // PARAMETRO -delete
+%token<TEXT> fast
+%token<TEXT> full
+// ----------------
+%token<TEXT> add               // PARAMETRO -add
+// ----------------
+%token<TEXT> t_name               // PARAMETRO -name
+
 
 
 // ACA SERAN TODOS LOS NO TERMINALES
@@ -90,9 +106,10 @@ Start
      	;
 
 COMANDO
-	:  mkdisk COMANDOMKDISKS 	{ $$ = new Nodo("MKDISK", ""); $$->add(*$2); }
-	|  exec COMANDOMKDISKS		{ $$ = new Nodo("EXEC", ""); $$->add(*$2); }
-	|  rmdisk COMANDOMKDISKS	{ $$ = new Nodo("RMDISK", ""); $$->add(*$2); }
+	: mkdisk COMANDOMKDISKS 	{ $$ = new Nodo("MKDISK", ""); $$->add(*$2); }
+	| exec COMANDOMKDISKS		{ $$ = new Nodo("EXEC", ""); $$->add(*$2); }
+	| rmdisk COMANDOMKDISKS		{ $$ = new Nodo("RMDISK", ""); $$->add(*$2); }
+	| fdisk COMANDOMKDISKS		{ $$ = new Nodo("FDISK", ""); $$->add(*$2); }
 	;
 // ADMINISTRACION DE DISCOS.
 COMANDOMKDISKS
@@ -104,8 +121,17 @@ COMANDOMKDISK
 	| menos path igual t_root1	{ $$ = new Nodo("PATH", $4); 	}
 	| menos u igual k		{ $$ = new Nodo("U", "k"); 	}
 	| menos u igual m		{ $$ = new Nodo("U", "m"); 	}
+	| menos u igual b		{ $$ = new Nodo("U", "b"); 	}
 	| menos f igual bf		{ $$ = new Nodo("F", "bf"); 	}
 	| menos f igual ff		{ $$ = new Nodo("F", "ff"); 	}
 	| menos f igual wf		{ $$ = new Nodo("F", "wf"); 	}
+	| type igual p			{ $$ = new Nodo("TYPE", "p"); 	}
+	| type igual e			{ $$ = new Nodo("TYPE", "e"); 	}
+	| type igual l			{ $$ = new Nodo("TYPE", "l"); 	}
+	| t_name igual t_cadena		{ $$ = new Nodo("NAME", $3);	}
+	| t_name igual t_letra1		{ $$ = new Nodo("NAME", $3);	}
+	| t_delete igual fast		{ $$ = new Nodo("DELETE", "fast");	}
+	| t_delete igual full		{ $$ = new Nodo("DELETE", "full");	}
+	| add igual t_entero		{ $$ = new Nodo("ADD", $3);	}
 	;
 

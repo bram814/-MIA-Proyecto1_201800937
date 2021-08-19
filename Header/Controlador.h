@@ -13,13 +13,14 @@
 #include "../Analizador/scanner.h"
 #include "Administracion/Discos/Mkdisk.h"
 #include "Administracion/Discos/Rmdisk.h"
+#include "Administracion/Discos/Fdisk.h"
 #include "Script/Exec.h"
 extern Nodo *root;
 using namespace std;
 
 class Controlador{
 public:
-    static void execute();
+    void execute();
     static void command(const string& input);
     static void execute_command(Nodo *root);
     static void clear();

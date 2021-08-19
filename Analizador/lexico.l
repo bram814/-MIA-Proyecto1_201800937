@@ -54,15 +54,27 @@ t_cadena [\"][^\"\n]*[\"\n]
 "mkdisk"    {return mkdisk;}            /* COMANDO mkdisk   */
 "exec"      {return exec;}              /* COMANDO exec     */
 "rmdisk"    {return rmdisk;}            /* COMANDO rmdisk   */
+"fdisk"     {return fdisk;}             /* COMANDO fdisk    */
 "size"      {return size;}
 "path"      {return path;}
 "u"         {return u;}                 /* PARAMETRO -u     */
 "k"         {return k;}
 "m"         {return m;}
+"b"         {return b;}
 "f"         {return f;}                 /* PARAMETRO -f     */
 "bf"        {return bf;}
 "ff"        {return ff;}
 "wf"        {return wf;}
+"-type"     {return type;}              /* PARAMETRO -type  */
+"p"         {return p;}
+"e"         {return e;}
+"l"         {return l;}
+"-delete"    {return t_delete;}            /* PARAMETRO -delete */
+"fast"      {return fast;}
+"full"      {return full;}
+"-add"      {return add;}               /* PARAMETRO -add */
+"-name"      {return t_name;}              /* PARAMETRO name */
+"\n" {}
 
 
 {t_entero}         {strcpy(yylval.TEXT, yytext); return t_entero;}
@@ -72,6 +84,7 @@ t_cadena [\"][^\"\n]*[\"\n]
 {t_root2}          {strcpy(yylval.TEXT, yytext); return t_root2;}
 {t_cadena}         {strcpy(yylval.TEXT, yytext); return t_cadena;}
 (\s|\r|\t|\n)+     {}
+
 
 [[:blank:]]     {}
 .               {
