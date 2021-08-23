@@ -366,26 +366,5 @@ void Fdisk::part_delete(FDISK *fdisk){
     }
 
     fclose(file);
-
-
-
-    FILE *aux_file;
-    aux_file = fopen(fdisk->part_path.c_str(), "rb");
-    Controlador::MBR temp_mbr{};
-    fseek(file,0,SEEK_SET);
-    fread(&temp_mbr, sizeof(Controlador::MBR), 1, file);
-
-    for(int i=0; i<4; i++){
-        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Particion " << i << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-        cout << "NAME: " <<temp_mbr.mbr_particion[i].part_name << endl;
-        cout << "STATUS: " <<temp_mbr.mbr_particion[i].part_status << endl;
-        cout << "TYPE: " <<temp_mbr.mbr_particion[i].part_type << endl;
-        cout << "FIT: " <<temp_mbr.mbr_particion[i].part_fit << endl;
-        cout << "START: " <<temp_mbr.mbr_particion[i].part_start << endl;
-        cout << "SIZE: " <<temp_mbr.mbr_particion[i].part_size << endl;
-
-    }
-
-    fclose(aux_file);
-
+    
 }
