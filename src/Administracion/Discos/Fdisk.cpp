@@ -77,9 +77,14 @@ void Fdisk::execute_fdisk(Nodo *root){
         }
     }else{
         if(flag_path && flag_name){
-            
+            if(flag_delete && !flag_add){
+                part_delete(&fdisk);
+            }else{
+                return Controlador::print("ERROR, NO PUEDEN VENIR JUNTOS ADD Y DELETE.");
+            }
+        }else{
+            return Controlador::print("ERROR, FALTA PARAMETRO [SIZE,PATH,NAME]!!");
         }
-        return Controlador::print("ERROR, FALTA PARAMETRO [SIZE,PATH,NAME]!!");
     }
 }
 
@@ -90,7 +95,7 @@ void Fdisk::primary(FDISK *fdisk){
     fseek(file,0,SEEK_SET);
     fread(&mbr, sizeof(Controlador::MBR), 1, file);
 
-    int part_tam_ocupado = 0, part_cant = 1;
+    int part_tam_ocupado = 0, part_cant = 0;
     for(int i = 0; i < 4; i++){
         if(strcmp(mbr.mbr_particion[i].part_name,fdisk->part_name.c_str()) == 0){ // strcmp, compara dos cadenas char, si son iguales retorna 0.
             return Controlador::print("ERROR, YA EXISTE ESE NOMBRE!!!");
@@ -121,7 +126,7 @@ void Fdisk::primary(FDISK *fdisk){
             fwrite(&mbr,sizeof(Controlador::MBR), 1, file);
             char buffer = '1';
             fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
-            for (int i = 0; i < mbr.mbr_particion[i].part_size; ++i) {
+            for (int j = 0; j < mbr.mbr_particion[i].part_size; j++) {
                 fwrite(&buffer, 1, 1, file);
             }
 
@@ -140,7 +145,7 @@ void  Fdisk::extend(FDISK *fdisk){
     fseek(file,0,SEEK_SET);
     fread(&mbr, sizeof(Controlador::MBR), 1, file);
 
-    int part_tam_ocupado = 0, part_cant = 1;
+    int part_tam_ocupado = 0, part_cant = 0;
     for(int i = 0; i < 4; i++){
         if(mbr.mbr_particion[i].part_type == 'e'){
             return Controlador::print("YA EXISTE UNA PARTICION EXTENDIDA!!");
@@ -186,7 +191,7 @@ void  Fdisk::extend(FDISK *fdisk){
             fseek(file, ebr.part_start, SEEK_SET);
             fwrite(&ebr, sizeof(Controlador::EBR), 1, file);
             char buffer = '1';
-            for (int i = 0; i < ebr.part_size - (int) sizeof(Controlador::EBR); ++i) {
+            for (int j = 0; j < ebr.part_size - (int) sizeof(Controlador::EBR); j++) {
                 fwrite(&buffer, 1, 1, file);
             }
 
@@ -251,9 +256,136 @@ void Fdisk::logic(FDISK *fdisk){
     fseek(file, aux_ebr.part_start, SEEK_SET);
     fwrite(&aux_ebr, sizeof(Controlador::EBR), 1, file);
     char buffer = '1';
-    for (int i = 0; i < (aux_ebr.part_size - (int) sizeof(Controlador::EBR)); ++i) {
+    for (int i = 0; i < (aux_ebr.part_size - (int) sizeof(Controlador::EBR)); i++) {
         fwrite(&buffer, 1, 1, file);
     }
     Controlador::print("PARTICION LOGICA CREADA!!!");
     fclose(file);
+}
+
+
+void Fdisk::part_delete(FDISK *fdisk){
+    string input;
+    while(true){
+        Controlador::print("¿Desea eliminar la Particion? [S/N]");
+        getline(cin,input);
+        if(input == "s" || input == "S"){
+            break;
+        }else{
+            return Controlador::print("No se Elimino la Particion.");
+        }
+    }
+    FILE *file;
+    file = fopen(fdisk->part_path.c_str(), "rb+");
+    Controlador::MBR mbr{};
+    fseek(file,0,SEEK_SET);
+    fread(&mbr, sizeof(Controlador::MBR), 1, file);
+    int temp_extendida = -1;
+    for(int i=0; i<4; i++){
+
+        if(strcmp(mbr.mbr_particion[i].part_name, fdisk->part_name.c_str())==0){
+            mbr.mbr_particion[i].part_status = '0';
+
+            fseek(file, 0, SEEK_SET);
+            fwrite(&mbr, sizeof(Controlador::MBR), 1, file);
+
+            if(fdisk->part_delete == "full"){
+                char buffer = '\0';
+                fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
+                for(int j=0; j<mbr.mbr_particion[i].part_size; j++){
+                    fwrite(&buffer, 1, 1, file);
+                    fseek(file, mbr.mbr_particion[i].part_start + j, SEEK_SET);
+                }
+            }
+
+            if(mbr.mbr_particion[i].part_type == 'e'){ //Si es una particion Extendida, se empieza eliminar cada particion logica.
+                temp_extendida = i;
+                Controlador::EBR ebr{};
+                fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
+                fread(&ebr, sizeof(Controlador::EBR), 1, file);
+
+                while(ebr.part_next != -1){
+                    ebr.part_status = '0';
+                    fseek(file, ebr.part_start, SEEK_SET);
+                    fwrite(&ebr, sizeof(Controlador::EBR), 1, file);
+
+                    if(fdisk->part_delete == "full"){
+                        char buffer = '\0';
+                        for (int j = 0; j < ebr.part_size-(int) sizeof(Controlador::EBR); j++) {
+                            fwrite(&buffer, 1,1, file);
+                        }
+                    }
+                    fseek(file, ebr.part_next, SEEK_SET);
+                    fread(&ebr, sizeof(Controlador::EBR), 1, file);
+
+                }
+
+                ebr.part_status = '0';
+                fseek(file, ebr.part_start, SEEK_SET);
+                fwrite(&ebr, sizeof(Controlador::EBR), 1, file);
+
+                if(fdisk->part_delete == "full"){
+                    char buffer = '\0';
+                    for (int j = 0; j < ebr.part_size - (int) sizeof(Controlador::EBR); j++) {
+                        fwrite(&buffer, 1, 1, file);
+                    }
+                }
+
+            }
+
+        break;
+
+        }
+    }
+
+    // Si en dado caso no es una partición primaria ni extendida, debe de ser una lógica.
+    if(temp_extendida != -1){
+        Controlador::EBR ebr{};
+        fseek(file, mbr.mbr_particion[temp_extendida].part_start, SEEK_SET);
+        fread(&ebr, sizeof(Controlador::EBR), 1, file);
+        while(ebr.part_next != -1){
+
+            if(strcmp(ebr.part_name, fdisk->part_name.c_str()) == 0){
+                ebr.part_status = '0';
+                fseek(file, ebr.part_start, SEEK_SET);
+                fwrite(&ebr, sizeof(Controlador::EBR), 1, file);
+
+                if(fdisk->part_delete == "full"){
+                    char buffer = '\0';
+                    //fseek(file,auxEBR.part_start, SEEK_SET);
+                    for (int j = 0; j < ebr.part_size-(int) sizeof(Controlador::EBR); j++) {
+                        fwrite(&buffer, 1, 1, file);
+                    }
+                }
+                break;
+            }
+
+            fseek(file, ebr.part_next, SEEK_SET);
+            fread(&ebr, sizeof(Controlador::EBR), 1, file);
+        }
+    }
+
+    fclose(file);
+
+
+
+    FILE *aux_file;
+    aux_file = fopen(fdisk->part_path.c_str(), "rb");
+    Controlador::MBR temp_mbr{};
+    fseek(file,0,SEEK_SET);
+    fread(&temp_mbr, sizeof(Controlador::MBR), 1, file);
+
+    for(int i=0; i<4; i++){
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Particion " << i << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "NAME: " <<temp_mbr.mbr_particion[i].part_name << endl;
+        cout << "STATUS: " <<temp_mbr.mbr_particion[i].part_status << endl;
+        cout << "TYPE: " <<temp_mbr.mbr_particion[i].part_type << endl;
+        cout << "FIT: " <<temp_mbr.mbr_particion[i].part_fit << endl;
+        cout << "START: " <<temp_mbr.mbr_particion[i].part_start << endl;
+        cout << "SIZE: " <<temp_mbr.mbr_particion[i].part_size << endl;
+
+    }
+
+    fclose(aux_file);
+
 }

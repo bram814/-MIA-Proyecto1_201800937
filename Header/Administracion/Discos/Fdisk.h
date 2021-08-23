@@ -23,6 +23,7 @@ public:
     static void primary(FDISK *fdisk);
     static void extend(FDISK *fdisk);
     static void logic(FDISK *fdisk);
+    static void part_delete(FDISK *fdisk);
 
 
 

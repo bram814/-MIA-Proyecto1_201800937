@@ -11,7 +11,8 @@ int main() {
     cout << "|__JOSE ABRAHAM SOLORZANO HERRERA__|" << endl;
     cout << "|____________201800937_____________|" << endl;
     cout << ".__________________________________." << endl;
-    Controlador *instance = new Controlador();
+    auto *instance = new Controlador();
     instance->execute();
+    delete instance;
     return 0 ;
 }
