@@ -78,6 +78,10 @@ public:
             'n','o','p','q','r','s','t','u','v','w','x','y','z'
     };
 
+//                                          UMOUNT
+    void execute_umount(Nodo *root);
+    void delete_umount(string _identificador);
+
 //    ------------------------------------------------------------------------------------------
 };
 

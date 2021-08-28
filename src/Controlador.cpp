@@ -63,6 +63,9 @@ void Controlador::execute_command(Nodo *root) { // Verifica el comando y lo ejec
     }else if(root->tipo == "MOUNT"){
         getInstance()->execute_mount(root);
         return;
+    }else if(root->tipo == "UMOUNT"){
+        getInstance()->execute_umount(root);
+        return;
     }
 
 }
@@ -225,3 +228,33 @@ void Controlador::mostrar(){
     Controlador::print("----------------------------------------------------------------------");
 }
 
+
+void Controlador::execute_umount(Nodo *root){
+    list<Nodo>:: iterator nodo;
+    nodo = root->hijo.begin()->hijo.begin();
+    int i = 0; bool flag_id = false; string _identificador;
+    while(i<root->hijo.begin()->contador){
+        if(nodo->tipo == "ID" && !flag_id){
+            _identificador = nodo->valor;
+            flag_id = true;
+        }else {
+            return print("ERROR DE PARAMETRO!!! SOLO ACEPTA [-id].");
+        }
+        nodo++;
+        i++;
+    }
+    getInstance()->delete_umount(_identificador);
+}
+
+void Controlador::delete_umount(string _identificador){
+    list<MOUNT>:: iterator aux;
+    for(aux = Controlador::list_mount.begin(); aux != Controlador::list_mount.end(); aux++){
+        if(aux->identificador == _identificador){
+            Controlador::list_mount.erase(aux);
+            print("Partición Desmontada...");
+            break;
+        }
+    }
+
+    mostrar();
+}

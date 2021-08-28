@@ -61,6 +61,7 @@ class Nodo        *node;
 %token<TEXT> fdisk		// COMANDO fdisk
 %token<TEXT> t_pause		// COMANDO pause
 %token<TEXT> mount		// COMANDO mount
+%token<TEXT> umount		// COMANDO umount
 // ----------------
 %token<TEXT> size		// PARAMETRO -size
 %token<TEXT> path		// PARAMETRO -path
@@ -80,13 +81,15 @@ class Nodo        *node;
 %token<TEXT> e
 %token<TEXT> l
 // ----------------
-%token<TEXT> t_delete            // PARAMETRO -delete
+%token<TEXT> t_delete           // PARAMETRO -delete
 %token<TEXT> fast
 %token<TEXT> full
 // ----------------
-%token<TEXT> add               // PARAMETRO -add
+%token<TEXT> add                // PARAMETRO -add
 // ----------------
-%token<TEXT> t_name               // PARAMETRO -name
+%token<TEXT> t_name             // PARAMETRO -name
+// ----------------
+%token<TEXT> id               	// PARAMETRO -id
 
 
 
@@ -114,6 +117,7 @@ COMANDO
 	| rmdisk COMANDOMKDISKS		{ $$ = new Nodo("RMDISK", ""); $$->add(*$2); }
 	| fdisk COMANDOMKDISKS		{ $$ = new Nodo("FDISK", ""); $$->add(*$2); }
 	| mount COMANDOMKDISKS		{ $$ = new Nodo("MOUNT", ""); $$->add(*$2); }
+	| umount COMANDOMKDISKS		{ $$ = new Nodo("UMOUNT", ""); $$->add(*$2); }
 	| t_pause				{ $$ = new Nodo("PAUSE", "");}
 	;
 // ADMINISTRACION DE DISCOS.
@@ -138,5 +142,6 @@ COMANDOMKDISK
 	| t_delete igual fast		{ $$ = new Nodo("DELETE", "fast");	}
 	| t_delete igual full		{ $$ = new Nodo("DELETE", "full");	}
 	| add igual t_entero		{ $$ = new Nodo("ADD", $3);	}
+	| id igual t_letra2		{ $$ = new Nodo("ID", $3);	}
 	;
 

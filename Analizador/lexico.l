@@ -57,6 +57,7 @@ t_cadena [\"][^\"\n]*[\"\n]
 "fdisk"     {return fdisk;}             /* COMANDO fdisk    */
 "pause"     {return t_pause;}           /* COMANDO pause    */
 "mount"     {return mount;}             /* COMANDO mount    */
+"umount"    {return umount;}            /* COMANDO umount   */
 "size"      {return size;}
 "path"      {return path;}
 "u"         {return u;}                 /* PARAMETRO -u     */
@@ -71,11 +72,12 @@ t_cadena [\"][^\"\n]*[\"\n]
 "p"         {return p;}
 "e"         {return e;}
 "l"         {return l;}
-"-delete"    {return t_delete;}            /* PARAMETRO -delete */
+"-delete"   {return t_delete;}          /* PARAMETRO -delete */
 "fast"      {return fast;}
 "full"      {return full;}
 "-add"      {return add;}               /* PARAMETRO -add */
-"-name"      {return t_name;}              /* PARAMETRO name */
+"-name"     {return t_name;}            /* PARAMETRO name */
+"-id"       {return id;}                /* PARAMETRO -id  */
 "\n" {}
 
 
