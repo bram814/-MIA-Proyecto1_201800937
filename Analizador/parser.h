@@ -78,28 +78,29 @@ extern int yydebug;
     rmdisk = 284,
     fdisk = 285,
     t_pause = 286,
-    size = 287,
-    path = 288,
-    u = 289,
-    k = 290,
-    m = 291,
-    b = 292,
-    f = 293,
-    bf = 294,
-    ff = 295,
-    wf = 296,
-    type = 297,
-    p = 298,
-    e = 299,
-    l = 300,
-    t_delete = 301,
-    fast = 302,
-    full = 303,
-    add = 304,
-    t_name = 305,
-    suma = 306,
-    multi = 307,
-    division = 308
+    mount = 287,
+    size = 288,
+    path = 289,
+    u = 290,
+    k = 291,
+    m = 292,
+    b = 293,
+    f = 294,
+    bf = 295,
+    ff = 296,
+    wf = 297,
+    type = 298,
+    p = 299,
+    e = 300,
+    l = 301,
+    t_delete = 302,
+    fast = 303,
+    full = 304,
+    add = 305,
+    t_name = 306,
+    suma = 307,
+    multi = 308,
+    division = 309
   };
 #endif
 
@@ -112,7 +113,7 @@ union YYSTYPE
 char              TEXT[256];
 class Nodo        *node;
 
-#line 116 "parser.h"
+#line 117 "parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

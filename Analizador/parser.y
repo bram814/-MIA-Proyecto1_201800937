@@ -60,6 +60,7 @@ class Nodo        *node;
 %token<TEXT> rmdisk		// COMANDO rmdisk
 %token<TEXT> fdisk		// COMANDO fdisk
 %token<TEXT> t_pause		// COMANDO pause
+%token<TEXT> mount		// COMANDO mount
 // ----------------
 %token<TEXT> size		// PARAMETRO -size
 %token<TEXT> path		// PARAMETRO -path
@@ -112,6 +113,7 @@ COMANDO
 	| exec COMANDOMKDISKS		{ $$ = new Nodo("EXEC", ""); $$->add(*$2); }
 	| rmdisk COMANDOMKDISKS		{ $$ = new Nodo("RMDISK", ""); $$->add(*$2); }
 	| fdisk COMANDOMKDISKS		{ $$ = new Nodo("FDISK", ""); $$->add(*$2); }
+	| mount COMANDOMKDISKS		{ $$ = new Nodo("MOUNT", ""); $$->add(*$2); }
 	| t_pause				{ $$ = new Nodo("PAUSE", "");}
 	;
 // ADMINISTRACION DE DISCOS.

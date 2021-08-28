@@ -2,8 +2,6 @@
 // Created by abraham on 8/08/21.
 //
 #include "Header/Controlador.h"
-
-
 int main() {
 
     cout << ".__________________________________." << endl;
@@ -11,8 +9,9 @@ int main() {
     cout << "|__JOSE ABRAHAM SOLORZANO HERRERA__|" << endl;
     cout << "|____________201800937_____________|" << endl;
     cout << ".__________________________________." << endl;
-    auto *instance = new Controlador();
+    auto *instance = Controlador::getInstance();
     instance->execute();
     delete instance;
-    return 0 ;
+
+     return 0 ;
 }

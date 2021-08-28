@@ -18,10 +18,14 @@
 #include "Script/Pause.h"
 extern Nodo *root;
 using namespace std;
-
 class Controlador{
+private:
+    Controlador();
+    static Controlador* instance;
 public:
+    static Controlador* getInstance();
     void execute();
+    int id_disco;
     static void command(const string& input);
     static void execute_command(Nodo *root);
     static void clear();
@@ -53,6 +57,28 @@ public:
         int part_next;
         char part_name[16];
     };
+//    ------------------------------------------------------------------------------------------
+//                                          MOUNT
+    void execute_mount(Nodo *root);
+    void add(string _identificador, string _path, string _name);
+    int verificar_id(string _path);
+    char verificar_abecedario(string _path);
+    bool verificar_mount(string _name);
+    void mostrar();
+    struct MOUNT{
+        string identificador;
+        string path;
+        string name;
+        int id_disco;
+
+    };
+    list<MOUNT> list_mount;
+    char abecedario[26] = {
+            'a','b','c','d','e','f','g','h','i','j','k','l','m',
+            'n','o','p','q','r','s','t','u','v','w','x','y','z'
+    };
+
+//    ------------------------------------------------------------------------------------------
 };
 
 

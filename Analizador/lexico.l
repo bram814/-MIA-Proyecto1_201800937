@@ -55,7 +55,8 @@ t_cadena [\"][^\"\n]*[\"\n]
 "exec"      {return exec;}              /* COMANDO exec     */
 "rmdisk"    {return rmdisk;}            /* COMANDO rmdisk   */
 "fdisk"     {return fdisk;}             /* COMANDO fdisk    */
-"pause"     {return t_pause;}             /* COMANDO pause    */
+"pause"     {return t_pause;}           /* COMANDO pause    */
+"mount"     {return mount;}             /* COMANDO mount    */
 "size"      {return size;}
 "path"      {return path;}
 "u"         {return u;}                 /* PARAMETRO -u     */

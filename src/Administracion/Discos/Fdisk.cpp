@@ -105,7 +105,7 @@ void Fdisk::primary(FDISK *fdisk){
         }
     }
 
-    if((mbr.mbr_tam - part_tam_ocupado) <= fdisk->part_size){
+    if((mbr.mbr_tam - part_tam_ocupado) < fdisk->part_size){
         return Controlador::print("SE EXCEDIO DEL TAMAÑO EL DISCO!!");
     }
     if(part_cant == 4){ return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES."); }
@@ -150,6 +150,9 @@ void  Fdisk::extend(FDISK *fdisk){
         if(mbr.mbr_particion[i].part_type == 'e'){
             return Controlador::print("YA EXISTE UNA PARTICION EXTENDIDA!!");
         }
+    }
+
+    for(int i = 0; i < 4; i++){
         if(strcmp(mbr.mbr_particion[i].part_name,fdisk->part_name.c_str()) == 0){
             return Controlador::print("ERROR, YA EXISTE ESE NOMBRE!!!");
         }else if(mbr.mbr_particion[i].part_status == '1'){
@@ -158,7 +161,7 @@ void  Fdisk::extend(FDISK *fdisk){
         }
     }
 
-    if((mbr.mbr_tam - part_tam_ocupado) <= fdisk->part_size){
+    if((mbr.mbr_tam - part_tam_ocupado) < fdisk->part_size){
         return Controlador::print("SE EXCEDIO DEL TAMAÑO EL DISCO!!");
     }
     if(part_cant == 4){ return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES."); }
@@ -213,11 +216,17 @@ void Fdisk::logic(FDISK *fdisk){
 
     int i_extendida=4, aux_size = 0;
     for(int i = 0; i < 4; i++){
+        if(strcmp(mbr.mbr_particion[i].part_name, fdisk->part_name.c_str())==0){
+            return Controlador::print("YA EXISTE ESE NOMBRE EN LA PARTICION PRIMARIA Os EXTENDIDA!!");
+        }
+    }
+    for(int i = 0; i < 4; i++){
         if(mbr.mbr_particion[i].part_type == 'e'){
             i_extendida = i;
             break;
         }
     }
+
     if(i_extendida == 4){
         return Controlador::print("ERROR, NO SE PUEDE CREAR UNA PARTICION LOGICA, NO EXISTE PARTICION EXTENDIDA!!!");
     }
@@ -364,7 +373,7 @@ void Fdisk::part_delete(FDISK *fdisk){
             fread(&ebr, sizeof(Controlador::EBR), 1, file);
         }
     }
-
+    Controlador::print("USO DE -delete CORRECTO.");
     fclose(file);
-    
+
 }
