@@ -178,7 +178,6 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
                      "    rankdir=LR\n"
                      "    node [shape=plaintext]\n"
                      "    \n"
-                     
                      "    Bar [label=<\n"
                      "    <table border=\"2\" cellborder=\"1\" cellspacing=\"5\" cellpadding=\"5\">\n"
                      "      <tr>\n"

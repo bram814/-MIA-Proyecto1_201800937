@@ -98,6 +98,7 @@ void Fdisk::primary(FDISK *fdisk){
     int part_tam_ocupado = 0, part_cant = 0;
     for(int i = 0; i < 4; i++){
         if(strcmp(mbr.mbr_particion[i].part_name,fdisk->part_name.c_str()) == 0){ // strcmp, compara dos cadenas char, si son iguales retorna 0.
+            fclose(file);
             return Controlador::print("ERROR, YA EXISTE ESE NOMBRE!!!");
         }else if(mbr.mbr_particion[i].part_status == '1'){
             part_cant += 1;
@@ -106,9 +107,13 @@ void Fdisk::primary(FDISK *fdisk){
     }
 
     if((mbr.mbr_tam - part_tam_ocupado) < fdisk->part_size){
+        fclose(file);
         return Controlador::print("SE EXCEDIO DEL TAMAÑO EL DISCO!!");
     }
-    if(part_cant == 4){ return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES."); }
+    if(part_cant == 4){
+        fclose(file);
+        return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES.");
+    }
 
     for(int i=0; i<4; i++){
         if(mbr.mbr_particion[i].part_status == '0' && mbr.mbr_particion[i].part_start == -1){
@@ -148,12 +153,14 @@ void  Fdisk::extend(FDISK *fdisk){
     int part_tam_ocupado = 0, part_cant = 0;
     for(int i = 0; i < 4; i++){
         if(mbr.mbr_particion[i].part_type == 'e'){
+            fclose(file);
             return Controlador::print("YA EXISTE UNA PARTICION EXTENDIDA!!");
         }
     }
 
     for(int i = 0; i < 4; i++){
         if(strcmp(mbr.mbr_particion[i].part_name,fdisk->part_name.c_str()) == 0){
+            fclose(file);
             return Controlador::print("ERROR, YA EXISTE ESE NOMBRE!!!");
         }else if(mbr.mbr_particion[i].part_status == '1'){
             part_cant += 1;
@@ -162,9 +169,13 @@ void  Fdisk::extend(FDISK *fdisk){
     }
 
     if((mbr.mbr_tam - part_tam_ocupado) < fdisk->part_size){
+        fclose(file);
         return Controlador::print("SE EXCEDIO DEL TAMAÑO EL DISCO!!");
     }
-    if(part_cant == 4){ return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES."); }
+    if(part_cant == 4){
+        fclose(file);
+        return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES.");
+    }
     for(int i=0; i<4; i++){
         if(mbr.mbr_particion[i].part_status == '0' && mbr.mbr_particion[i].part_start == -1){
             //SE CREA LA PARTICION EXTENDIDA
@@ -217,6 +228,7 @@ void Fdisk::logic(FDISK *fdisk){
     int i_extendida=4, aux_size = 0;
     for(int i = 0; i < 4; i++){
         if(strcmp(mbr.mbr_particion[i].part_name, fdisk->part_name.c_str())==0){
+            fclose(file);
             return Controlador::print("YA EXISTE ESE NOMBRE EN LA PARTICION PRIMARIA Os EXTENDIDA!!");
         }
     }
@@ -228,6 +240,7 @@ void Fdisk::logic(FDISK *fdisk){
     }
 
     if(i_extendida == 4){
+        fclose(file);
         return Controlador::print("ERROR, NO SE PUEDE CREAR UNA PARTICION LOGICA, NO EXISTE PARTICION EXTENDIDA!!!");
     }
 
@@ -237,6 +250,7 @@ void Fdisk::logic(FDISK *fdisk){
 
     while(ebr.part_next != -1){
         if(strcmp(ebr.part_name, fdisk->part_name.c_str())==0){
+            fclose(file);
             return Controlador::print("YA EXISTE ESE NOMBRE EN LA PARTICION LOGICA!!");
         }
         aux_size += ebr.part_size;
@@ -244,6 +258,7 @@ void Fdisk::logic(FDISK *fdisk){
         fread(&ebr, sizeof(Controlador::EBR), 1, file);
     }
     if(mbr.mbr_particion[i_extendida].part_size < (aux_size+fdisk->part_size)){
+        fclose(file);
         return Controlador::print("Error, excede el tamaño de la particion logica con la extendida.");
     }
     int aux_part_next;
