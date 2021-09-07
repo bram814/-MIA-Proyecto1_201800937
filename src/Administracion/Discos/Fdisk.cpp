@@ -111,7 +111,7 @@ void Fdisk::primary(FDISK *fdisk){
     if(part_cant == 4){ return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES."); }
 
     for(int i=0; i<4; i++){
-        if(mbr.mbr_particion[i].part_status == '0'){
+        if(mbr.mbr_particion[i].part_status == '0' && mbr.mbr_particion[i].part_start == -1){
             mbr.mbr_particion[i].part_status = '1';
             mbr.mbr_particion[i].part_type = fdisk->part_type;
             mbr.mbr_particion[i].part_fit = fdisk->part_f;
@@ -166,7 +166,7 @@ void  Fdisk::extend(FDISK *fdisk){
     }
     if(part_cant == 4){ return Controlador::print("INSUFICIENTE ESPACIO, NO SE PUEDE EXCEDER MAS DE 4 PARTICIONES."); }
     for(int i=0; i<4; i++){
-        if(mbr.mbr_particion[i].part_status == '0'){
+        if(mbr.mbr_particion[i].part_status == '0' && mbr.mbr_particion[i].part_start == -1){
             //SE CREA LA PARTICION EXTENDIDA
             mbr.mbr_particion[i].part_status = '1';
             mbr.mbr_particion[i].part_type = fdisk->part_type;

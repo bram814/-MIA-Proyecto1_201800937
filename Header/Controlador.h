@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
 #include <dirent.h>
 #include "Nodo.h"
 #include "../Analizador/parser.h"
@@ -14,6 +15,7 @@
 #include "Administracion/Discos/Mkdisk.h"
 #include "Administracion/Discos/Rmdisk.h"
 #include "Administracion/Discos/Fdisk.h"
+#include "Reporte/Reporte.h"
 #include "Script/Exec.h"
 #include "Script/Pause.h"
 extern Nodo *root;
@@ -33,6 +35,7 @@ public:
     static bool getFile(string dir);
     static void create_directorio(string dir);
     static void print(const string& msg);
+    string toLower(string s);
 
     struct Particion{
         char part_status;
@@ -64,6 +67,7 @@ public:
     int verificar_id(string _path);
     char verificar_abecedario(string _path);
     bool verificar_mount(string _name);
+    string getPathMount(string _id);
     void mostrar();
     struct MOUNT{
         string identificador;

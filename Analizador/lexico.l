@@ -50,7 +50,7 @@ t_cadena [\"][^\"\n]*[\"\n]
 ":" {return dospuntos;}
 
 
-
+"#".*       {}
 "mkdisk"    {return mkdisk;}            /* COMANDO mkdisk   */
 "exec"      {return exec;}              /* COMANDO exec     */
 "rmdisk"    {return rmdisk;}            /* COMANDO rmdisk   */
@@ -58,6 +58,7 @@ t_cadena [\"][^\"\n]*[\"\n]
 "pause"     {return t_pause;}           /* COMANDO pause    */
 "mount"     {return mount;}             /* COMANDO mount    */
 "umount"    {return umount;}            /* COMANDO umount   */
+"rep"       {return rep;}               /* COMANDO rep      */
 "size"      {return size;}
 "path"      {return path;}
 "u"         {return u;}                 /* PARAMETRO -u     */

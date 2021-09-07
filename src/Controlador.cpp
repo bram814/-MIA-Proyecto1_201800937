@@ -66,6 +66,8 @@ void Controlador::execute_command(Nodo *root) { // Verifica el comando y lo ejec
     }else if(root->tipo == "UMOUNT"){
         getInstance()->execute_umount(root);
         return;
+    }else if(root->tipo == "REP"){
+        Reporte::execute_rep(root);
     }
 
 }
@@ -108,9 +110,10 @@ void Controlador::create_directorio(string dir) { // Crea carpetas, si el direct
 }
 
 void Controlador::print(const string& msg){ cout << msg << endl; }
-
+// -----------------------------------------------------------------------------------------------------------------
 //                                            MOUNT
 void Controlador::execute_mount(Nodo *root) {
+    cout << "ENTRO " << endl;
     list<Nodo>:: iterator nodo_actual;
     nodo_actual = root->hijo.begin()->hijo.begin();
     int i=0;
@@ -123,12 +126,12 @@ void Controlador::execute_mount(Nodo *root) {
             _name = nodo_actual->valor;
             flag_name = true;
         }else{
-            Controlador::print("ERROR! PARAMETRO INCORRECTO. [-path|-name]");
+            getInstance()->print("ERROR! PARAMETRO INCORRECTO. [-path|-name]");
         }
         i++;
         nodo_actual++;
     }
-    if(verificar_mount(_name)){ return print("ERROR, YA EXISTE ESA PARTICIÓN MONTADA!!"); }
+    if(getInstance()->verificar_mount(_name)){ return getInstance()->print("ERROR, YA EXISTE ESA PARTICIÓN MONTADA!!"); }
     FILE *file;
     file = fopen(_path.c_str(), "rb+");
     MBR mbr{};
@@ -137,7 +140,7 @@ void Controlador::execute_mount(Nodo *root) {
     int aux_i = -1;
     for(int i = 0; i < 4; i++){
         if(strcmp(mbr.mbr_particion[i].part_name,_name.c_str()) == 0 && (mbr.mbr_particion[i].part_status == '1')) { // strcmp, compara dos cadenas char, si son iguales retorna 0.
-            return add("", _path, _name);
+            return getInstance()->add("", _path, _name);
         }
         if(mbr.mbr_particion[i].part_type == 'e' && (mbr.mbr_particion[i].part_status == '1')){
             aux_i = i;
@@ -150,7 +153,7 @@ void Controlador::execute_mount(Nodo *root) {
         fread(&ebr, sizeof(EBR), 1, file);
         while(ebr.part_next != -1){
             if(strcmp(ebr.part_name, _name.c_str())== 0 && ebr.part_status == '1'){
-                return add("", _path, _name);
+                return getInstance()->add("", _path, _name);
             }
             fseek(file, ebr.part_next, SEEK_SET);
             fread(&ebr, sizeof(EBR), 1, file);
@@ -164,14 +167,13 @@ void Controlador::add(string _identificador, string _path, string _name){
     }
     int aux_id_disco = verificar_id(_path); // Aca Obtiene el contador o lo incrementa.
     _identificador = "37" + to_string(aux_id_disco) + verificar_abecedario(_path); // Aca concatena el carnet + contador + letra.
-
     MOUNT mount{};
     mount.identificador = _identificador;
     mount.path = _path;
     mount.name = _name;
     mount.id_disco = aux_id_disco;
     Controlador::list_mount.push_back(mount);
-    mostrar();
+    getInstance()->mostrar();
 }
 
 int Controlador::verificar_id(string _path){
@@ -185,7 +187,18 @@ int Controlador::verificar_id(string _path){
     return id_disco;
 }
 
-char Controlador::verificar_abecedario(string _path) {
+string Controlador::getPathMount(string _id){
+    list<MOUNT>:: iterator aux;
+    for(aux = Controlador::list_mount.begin(); aux != Controlador::list_mount.end(); aux++){
+        if(aux->identificador == _id) {
+            return aux->path;
+        }
+    }
+    return NULL;
+}
+
+
+char Controlador::verificar_abecedario(string _path) { // Devuelve una letra del abecedario.
     list<MOUNT>:: iterator nodo;
     string temp_identificador;
     bool flag = false;
@@ -208,7 +221,7 @@ char Controlador::verificar_abecedario(string _path) {
     }
     return abecedario[0];
 }
-bool Controlador::verificar_mount(string _name){
+bool Controlador::verificar_mount(string _name){ // Verifica si esta repetido la partición.
     list<MOUNT>:: iterator aux;
     for(aux = Controlador::list_mount.begin(); aux != Controlador::list_mount.end(); aux++){
         if(strcmp(aux->name.c_str(),_name.c_str())==0){
@@ -249,12 +262,11 @@ void Controlador::execute_umount(Nodo *root){
 void Controlador::delete_umount(string _identificador){
     list<MOUNT>:: iterator aux;
     for(aux = Controlador::list_mount.begin(); aux != Controlador::list_mount.end(); aux++){
-        if(aux->identificador == _identificador){
+        if(strcmp(aux->identificador.c_str(), _identificador.c_str()) == 0){
             Controlador::list_mount.erase(aux);
-            print("Partición Desmontada...");
+            getInstance()->print("Partición Desmontada...");
             break;
         }
     }
-
-    mostrar();
+    getInstance()->mostrar();
 }
