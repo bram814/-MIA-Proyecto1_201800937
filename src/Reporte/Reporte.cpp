@@ -190,7 +190,13 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
             if(mbr.mbr_particion[i].part_type != 'e'){
                 double porcentaje= 0;
                 porcentaje = mbr.mbr_particion[i].part_size*100/mbr.mbr_tam;
-                contenido += "    <td rowspan=\"3\" width=\"10\">Primaria " + to_string(trunc(porcentaje)) + "%</td>\n";
+                contenido += "          <td rowspan=\"3\" width=\"10\">Primaria " + to_string(trunc(porcentaje)) + "%</td>\n";
+            }
+        }else if(mbr.mbr_particion[i].part_status == '0' && mbr.mbr_particion[i].part_start != -1){
+            if(mbr.mbr_particion[i].part_type != 'e'){
+                double porcentaje= 0;
+                porcentaje = mbr.mbr_particion[i].part_size*100/mbr.mbr_tam;
+                contenido += "          <td rowspan=\"3\" width=\"10\">Libre " + to_string(trunc(porcentaje)) + "%</td>\n";
             }
         }
         if(mbr.mbr_particion[i].part_type == 'e'){
@@ -210,18 +216,32 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
         contenido += "  \n"
                    "  <tr>\n";
         while(ebr.part_next != -1){
-            porcentaje = ebr.part_size*100/mbr.mbr_tam;
-            contenido += "    <td > EBR| Lógica " + to_string(porcentaje) + "%</td>\n"
-                                                                          "  \n";
+
+            if(ebr.part_status != '0'){
+                porcentaje = ebr.part_size*100/mbr.mbr_tam;
+                contenido += "    <td > EBR| Lógica " + to_string(porcentaje) + "%</td>\n";
+            }else if(ebr.part_status == '0' && ebr.part_next != -1){
+                porcentaje = ebr.part_size*100/mbr.mbr_tam;
+                contenido += "    <td > EBR| Libre " + to_string(porcentaje) + "%</td>\n";
+
+            }
             contador++;
             fseek(file, ebr.part_next, SEEK_SET);
             fread(&ebr, sizeof(Controlador::EBR), 1, file);
         }
 
-        porcentaje = ebr.part_size*100/mbr.mbr_tam;
-        contenido += "    <td> EBR| Lógica " + to_string(porcentaje) + "%</td>\n"
-                   "  </tr>\n"
-                   "  \n";
+        if(ebr.part_status != '0'){
+            porcentaje = ebr.part_size*100/mbr.mbr_tam;
+            contenido += "    <td> EBR| Lógica " + to_string(porcentaje) + "%</td>\n"
+                                                                           "  </tr>\n"
+                                                                           "  \n";
+        }else if(ebr.part_status == '0' && ebr.part_size != -1){
+            porcentaje = ebr.part_size*100/mbr.mbr_tam;
+            contenido += "    <td> EBR| Libre " + to_string(porcentaje) + "%</td>\n"
+                                                                           "  </tr>\n"
+                                                                           "  \n";
+        }
+
 
     }
     contenido += "\n"

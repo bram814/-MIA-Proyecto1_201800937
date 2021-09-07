@@ -257,7 +257,7 @@ void Fdisk::logic(FDISK *fdisk){
         fseek(file, ebr.part_next, SEEK_SET);
         fread(&ebr, sizeof(Controlador::EBR), 1, file);
     }
-    if(mbr.mbr_particion[i_extendida].part_size < (aux_size+fdisk->part_size)){
+    if(( mbr.mbr_particion[i_extendida].part_size - (aux_size+fdisk->part_size))<=-1){
         fclose(file);
         return Controlador::print("Error, excede el tamaño de la particion logica con la extendida.");
     }
@@ -304,25 +304,30 @@ void Fdisk::part_delete(FDISK *fdisk){
     Controlador::MBR mbr{};
     fseek(file,0,SEEK_SET);
     fread(&mbr, sizeof(Controlador::MBR), 1, file);
+    bool flag = false;
     int temp_extendida = -1;
     for(int i=0; i<4; i++){
 
         if(strcmp(mbr.mbr_particion[i].part_name, fdisk->part_name.c_str())==0){
             mbr.mbr_particion[i].part_status = '0';
 
-            fseek(file, 0, SEEK_SET);
-            fwrite(&mbr, sizeof(Controlador::MBR), 1, file);
+            if(mbr.mbr_particion[i].part_type == 'p'){
+                fseek(file, 0, SEEK_SET);
+                fwrite(&mbr, sizeof(Controlador::MBR), 1, file);
 
-            if(fdisk->part_delete == "full"){
-                char buffer = '\0';
-                fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
-                for(int j=0; j<mbr.mbr_particion[i].part_size; j++){
-                    fwrite(&buffer, 1, 1, file);
-                    fseek(file, mbr.mbr_particion[i].part_start + j, SEEK_SET);
+                if(fdisk->part_delete == "full"){
+                    char buffer = '\0';
+                    fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
+                    for(int j=0; j<mbr.mbr_particion[i].part_size; j++){
+                        fwrite(&buffer, 1, 1, file);
+                        fseek(file, mbr.mbr_particion[i].part_start + j, SEEK_SET);
+                    }
                 }
             }
 
+
             if(mbr.mbr_particion[i].part_type == 'e'){ //Si es una particion Extendida, se empieza eliminar cada particion logica.
+                flag = true;
                 temp_extendida = i;
                 Controlador::EBR ebr{};
                 fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
@@ -343,7 +348,6 @@ void Fdisk::part_delete(FDISK *fdisk){
                     fread(&ebr, sizeof(Controlador::EBR), 1, file);
 
                 }
-
                 ebr.part_status = '0';
                 fseek(file, ebr.part_start, SEEK_SET);
                 fwrite(&ebr, sizeof(Controlador::EBR), 1, file);
@@ -359,6 +363,9 @@ void Fdisk::part_delete(FDISK *fdisk){
 
         break;
 
+        }
+        if(mbr.mbr_particion[i].part_type == 'e' && !flag){
+            temp_extendida = i;
         }
     }
 
@@ -386,6 +393,19 @@ void Fdisk::part_delete(FDISK *fdisk){
 
             fseek(file, ebr.part_next, SEEK_SET);
             fread(&ebr, sizeof(Controlador::EBR), 1, file);
+        }
+
+        fseek(file, ebr.part_start, SEEK_SET);
+        fwrite(&ebr, sizeof(Controlador::EBR), 1, file);
+        if(ebr.part_start != -1 && ebr.part_status!= '0' && strcmp(ebr.part_name, fdisk->part_name.c_str()) == 0){
+            ebr.part_status = '0';
+            if(fdisk->part_delete == "full"){
+                char buffer = '\0';
+                for (int j = 0; j < ebr.part_size - (int) sizeof(Controlador::EBR); j++) {
+                    fwrite(&buffer, 1, 1, file);
+                }
+            }
+            cout << ebr.part_status << endl;
         }
     }
     Controlador::print("USO DE -delete CORRECTO.");
