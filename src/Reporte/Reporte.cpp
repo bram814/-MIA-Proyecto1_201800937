@@ -219,10 +219,10 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
 
             if(ebr.part_status != '0'){
                 porcentaje = ebr.part_size*100/mbr.mbr_tam;
-                contenido += "    <td > EBR| Lógica " + to_string(porcentaje) + "%</td>\n";
+                contenido += "    <td> EBR| Lógica " + to_string(porcentaje) + "%</td>\n";
             }else if(ebr.part_status == '0' && ebr.part_next != -1){
                 porcentaje = ebr.part_size*100/mbr.mbr_tam;
-                contenido += "    <td > EBR| Libre " + to_string(porcentaje) + "%</td>\n";
+                contenido += "    <td> EBR| Libre " + to_string(porcentaje) + "%</td>\n";
 
             }
             contador++;
@@ -230,16 +230,19 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
             fread(&ebr, sizeof(Controlador::EBR), 1, file);
         }
 
+        fseek(file, ebr.part_start, SEEK_SET);
+        fread(&ebr, sizeof(Controlador::EBR), 1, file);
+
         if(ebr.part_status != '0'){
             porcentaje = ebr.part_size*100/mbr.mbr_tam;
             contenido += "    <td> EBR| Lógica " + to_string(porcentaje) + "%</td>\n"
-                                                                           "  </tr>\n"
-                                                                           "  \n";
+                         "  </tr>\n"
+                         "  \n";
         }else if(ebr.part_status == '0' && ebr.part_size != -1){
             porcentaje = ebr.part_size*100/mbr.mbr_tam;
             contenido += "    <td> EBR| Libre " + to_string(porcentaje) + "%</td>\n"
-                                                                           "  </tr>\n"
-                                                                           "  \n";
+                         "  </tr>\n"
+                         "  \n";
         }
 
 

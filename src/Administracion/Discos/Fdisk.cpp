@@ -79,6 +79,8 @@ void Fdisk::execute_fdisk(Nodo *root){
         if(flag_path && flag_name){
             if(flag_delete && !flag_add){
                 part_delete(&fdisk);
+            }else if(!flag_delete && flag_add){
+                Controlador::getInstance()->print("Es un -add");
             }else{
                 return Controlador::print("ERROR, NO PUEDEN VENIR JUNTOS ADD Y DELETE.");
             }
@@ -405,7 +407,8 @@ void Fdisk::part_delete(FDISK *fdisk){
                     fwrite(&buffer, 1, 1, file);
                 }
             }
-            cout << ebr.part_status << endl;
+            fseek(file, ebr.part_start, SEEK_SET);
+            fwrite(&ebr, sizeof(Controlador::EBR), 1, file);
         }
     }
     Controlador::print("USO DE -delete CORRECTO.");
