@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/main.dir/Analizador/parser.cpp.o CMakeFiles/main.dir/Analizador/scanner.cpp.o CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/src/Nodo.cpp.o CMakeFiles/main.dir/src/Controlador.cpp.o CMakeFiles/main.dir/src/Administracion/Mkdisk.cpp.o -o main 

@@ -36,12 +36,15 @@ void Reporte::execute_rep(Nodo *root) {
         nodo++;
     }
 
-
-    if(toLower(_name) == "mbr"){
-        generate_mbr(Controlador::getInstance()->getPathMount(_id), _path);
-    }else if(toLower(_name) == "disk"){
-        generate_disk(Controlador::getInstance()->getPathMount(_id), _path);
+    if(Controlador::getInstance()->getPathMount(_id)!="-1"){
+        if(toLower(_name) == "mbr"){
+            generate_mbr(Controlador::getInstance()->getPathMount(_id), _path);
+        }else if(toLower(_name) == "disk"){
+            generate_disk(Controlador::getInstance()->getPathMount(_id), _path);
+        }
     }
+
+
 
 }
 void Reporte::generate_mbr(string _disk_path, string _graph_path) {
@@ -173,7 +176,7 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
     Controlador::MBR mbr{};
     fseek(file,0,SEEK_SET);
     fread(&mbr, sizeof(Controlador::MBR), 1, file);
-
+    bool flag = true;
     string contenido = "digraph structs {\n"
                      "    rankdir=LR\n"
                      "    node [shape=plaintext]\n"
@@ -197,6 +200,7 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
                 double porcentaje= 0;
                 porcentaje = mbr.mbr_particion[i].part_size*100/mbr.mbr_tam;
                 contenido += "          <td rowspan=\"3\" width=\"10\">Libre " + to_string(trunc(porcentaje)) + "%</td>\n";
+                flag = false;
             }
         }
         if(mbr.mbr_particion[i].part_type == 'e'){
@@ -208,7 +212,7 @@ void Reporte::generate_disk(string _disk_path, string _graph_path) {
     contenido += "      </tr>\n";
 
     int contador = 1;
-    if(aux_i != -1){
+    if(aux_i != -1 && flag){
         Controlador::EBR ebr;
         double porcentaje = 0;
         fseek(file, mbr.mbr_particion[aux_i].part_start, SEEK_SET);
@@ -279,7 +283,7 @@ void Reporte::RepDot(string _name, string _path, string _contenido){
 
     cmd = "dot " + extension_path(_path) + " " + _name + " -o " + _path;
     system(cmd.c_str());
-    cout << "\n REPORTE MBR GENERADO! \n" << endl;
+    cout << "\n REPORTE GENERADO! \n" << endl;
 }
 
 string Reporte::toLower(string _cadena) {

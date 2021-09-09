@@ -113,7 +113,6 @@ void Controlador::print(const string& msg){ cout << msg << endl; }
 // -----------------------------------------------------------------------------------------------------------------
 //                                            MOUNT
 void Controlador::execute_mount(Nodo *root) {
-    cout << "ENTRO " << endl;
     list<Nodo>:: iterator nodo_actual;
     nodo_actual = root->hijo.begin()->hijo.begin();
     int i=0;
@@ -194,7 +193,7 @@ string Controlador::getPathMount(string _id){
             return aux->path;
         }
     }
-    return NULL;
+    return "-1";
 }
 
 

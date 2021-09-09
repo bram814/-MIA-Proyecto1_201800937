@@ -81,6 +81,7 @@ void Fdisk::execute_fdisk(Nodo *root){
                 part_delete(&fdisk);
             }else if(!flag_delete && flag_add){
                 Controlador::getInstance()->print("Es un -add");
+                part_add(&fdisk);
             }else{
                 return Controlador::print("ERROR, NO PUEDEN VENIR JUNTOS ADD Y DELETE.");
             }
@@ -312,11 +313,11 @@ void Fdisk::part_delete(FDISK *fdisk){
 
         if(strcmp(mbr.mbr_particion[i].part_name, fdisk->part_name.c_str())==0){
             mbr.mbr_particion[i].part_status = '0';
-
+            fseek(file, 0, SEEK_SET);
+            fwrite(&mbr, sizeof(Controlador::MBR), 1, file);
             if(mbr.mbr_particion[i].part_type == 'p'){
-                fseek(file, 0, SEEK_SET);
-                fwrite(&mbr, sizeof(Controlador::MBR), 1, file);
-
+//                fseek(file, 0, SEEK_SET);
+//                fwrite(&mbr, sizeof(Controlador::MBR), 1, file);
                 if(fdisk->part_delete == "full"){
                     char buffer = '\0';
                     fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
@@ -412,6 +413,166 @@ void Fdisk::part_delete(FDISK *fdisk){
         }
     }
     Controlador::print("USO DE -delete CORRECTO.");
+    fclose(file);
+
+}
+
+void Fdisk::part_add(FDISK *fdisk) {
+    FILE *file;
+    file = fopen(fdisk->part_path.c_str(), "rb+");
+    Controlador::MBR mbr{};
+    fseek(file, 0, SEEK_SET);
+    fread(&mbr, sizeof(Controlador::MBR), 1, file);
+    bool flag = false;
+    int temp_extendida = -1, tam_ocupado = 0;
+
+    if(fdisk->part_u == 'm'){ fdisk->part_add = fdisk->part_add*1024*1024; }         // convierte a MEGABYTES.
+    else if(fdisk->part_u == 'k'){ fdisk->part_add = fdisk->part_add*1024; }         // convierte a KILOBYTES.
+    else if(fdisk->part_u == 'b'){ fdisk->part_add = fdisk->part_add; }
+
+    for(int i = 0; i<4; i++){
+        if(mbr.mbr_particion[i].part_status != '0'){
+            tam_ocupado += mbr.mbr_particion[i].part_size;
+        }
+    }
+    for(int i = 0; i<4; i++){
+        if(strcmp(mbr.mbr_particion[i].part_name, fdisk->part_name.c_str())==0){
+            if(fdisk->part_add < 0){
+                cout << "EL ADD ES MENOR A 0-> "<< fdisk->part_add << ":" << mbr.mbr_particion[i].part_size + fdisk->part_add << endl;
+                if((mbr.mbr_particion[i].part_size + fdisk->part_add)>=0){
+                    fseek(file, 0, SEEK_SET);
+                    fread(&mbr, sizeof(Controlador::MBR), 1, file);
+                    mbr.mbr_particion[i].part_size = mbr.mbr_particion[i].part_size + (fdisk->part_add);
+                    cout << "SE REDUCIO TAMAÑO" << mbr.mbr_particion[i].part_size<< endl;
+                    fseek(file, 0, SEEK_SET);
+                    fwrite(&mbr,sizeof(Controlador::MBR), 1, file);
+                    char buffer = '1';
+                    fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
+                    for (int j = 0; j < mbr.mbr_particion[i].part_size; j++) {
+                        fwrite(&buffer, 1, 1, file);
+                    }
+
+                    break;
+                }else{
+                    fclose(file);
+                    Controlador::getInstance()->print("ERROR, TAMAÑO NEGATIVO");
+                }
+                break;
+            }else if(fdisk->part_add >= 0){
+                if(i != 4){
+                    if(i==3){
+                        if((tam_ocupado + fdisk->part_add)<=mbr.mbr_tam){
+                            fseek(file, 0, SEEK_SET);
+                            fread(&mbr, sizeof(Controlador::MBR), 1, file);
+                            mbr.mbr_particion[i].part_size += fdisk->part_add;
+                            cout << "SE AGREGÓ MAS TAMAÑO" << mbr.mbr_particion[i].part_size<< endl;
+                            fseek(file, 0, SEEK_SET);
+                            fwrite(&mbr,sizeof(Controlador::MBR), 1, file);
+                            char buffer = '1';
+                            fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
+                            for (int j = 0; j < mbr.mbr_particion[i].part_size; j++) {
+                                fwrite(&buffer, 1, 1, file);
+                            }
+
+
+
+                            cout << "SE AGREGÓ MAS TAMAÑO" << mbr.mbr_particion[i].part_size<< endl;
+                            break;
+                        }else{
+                            fclose(file);
+                            return Controlador::getInstance()->print("ERROR, SE EXCEDIO DEL TAMAÑO");
+                        }
+
+                    }else if(i<3 && mbr.mbr_particion[i].part_status != '0'){
+                        if(mbr.mbr_particion[i+1].part_status == '0' && mbr.mbr_particion[i+1].part_start != -1){
+                            if((mbr.mbr_particion[i+1].part_size - fdisk->part_add)>=0){
+                                fseek(file, 0, SEEK_SET);
+                                fread(&mbr, sizeof(Controlador::MBR), 1, file);
+                                mbr.mbr_particion[i].part_size += fdisk->part_add;
+                                mbr.mbr_particion[i+1].part_size -= fdisk->part_add;
+                                fseek(file, 0, SEEK_SET);
+                                fwrite(&mbr,sizeof(Controlador::MBR), 1, file);
+                                char buffer = '1';
+                                fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
+                                for (int j = 0; j < mbr.mbr_particion[i].part_size; j++) {
+                                    fwrite(&buffer, 1, 1, file);
+                                }
+                                cout << "SE AGREGÓ MAS TAMAÑO" << mbr.mbr_particion[i].part_size<< endl;
+                            }else{
+                                fclose(file);
+                                return Controlador::getInstance()->print("ERROR, TAMAÑO NEGATIVO.");
+                            }
+                        }else{
+                            if((tam_ocupado + fdisk->part_add)<=mbr.mbr_tam){
+                                fseek(file, 0, SEEK_SET);
+                                fread(&mbr, sizeof(Controlador::MBR), 1, file);
+                                mbr.mbr_particion[i].part_size += fdisk->part_add;
+                                fseek(file, 0, SEEK_SET);
+                                fwrite(&mbr,sizeof(Controlador::MBR), 1, file);
+                                char buffer = '1';
+                                fseek(file, mbr.mbr_particion[i].part_start, SEEK_SET);
+                                for (int j = 0; j < mbr.mbr_particion[i].part_size; j++) {
+                                    fwrite(&buffer, 1, 1, file);
+                                }
+
+                                cout << "SE AGREGÓ MAS TAMAÑO" << mbr.mbr_particion[i].part_size<< endl;
+                            }else{
+                                fclose(file);
+                                return Controlador::getInstance()->print("ERROR, SE EXCEDIO DEL TAMAÑO");
+                            }
+
+                        }
+                        break;
+                    }
+                    break;
+
+                }
+                break;
+            }
+        }
+
+        if(mbr.mbr_particion[i].part_type == 'e'){
+            temp_extendida = i;
+        }
+
+    }
+
+
+    if(temp_extendida != -1){
+//        Controlador::EBR ebr{};
+//        fseek(file, mbr.mbr_particion[temp_extendida].part_start, SEEK_SET);
+//        fread(&ebr, sizeof(Controlador::EBR), 1, file);
+//        while(ebr.part_next != -1) {
+//
+//            if (strcmp(ebr.part_name, fdisk->part_name.c_str()) == 0) {
+//                if(fdisk->part_add < 0){
+//                    if((ebr.part_size + fdisk->part_add)>=0){
+//                        fseek(file, 0, SEEK_SET);
+//                        fread(&mbr, sizeof(Controlador::MBR), 1, file);
+//                        ebr.part_size = ebr.part_size + (fdisk->part_add);
+//                        cout << "SE REDUCIO TAMAÑO" << ebr.part_size<< endl;
+//                        fseek(file, 0, SEEK_SET);
+//                        fwrite(&mbr,sizeof(Controlador::MBR), 1, file);
+//                        char buffer = '1';
+//                        fseek(file, ebr.part_start, SEEK_SET);
+//                        for (int j = 0; j < ebr.part_size; j++) {
+//                            fwrite(&buffer, 1, 1, file);
+//                        }
+//
+//                        break;
+//                    }else{
+//                        fclose(file);
+//                        Controlador::getInstance()->print("ERROR, TAMAÑO NEGATIVO");
+//                    }
+//                    break;
+//                }
+//            }
+//
+//            fseek(file, ebr.part_next, SEEK_SET);
+//            fread(&ebr, sizeof(Controlador::EBR), 1, file);
+//        }
+
+    }
     fclose(file);
 
 }
